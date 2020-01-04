@@ -1,0 +1,101 @@
+{
+  "name": "react-editor",
+  "productName": "react-editor",
+  "version": "1.0.0",
+  "description": "My Electron application description",
+  "main": ".webpack/main",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "tslint -c tslint.json -p tsconfig.json"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Benedykt Dryl",
+    "email": "cypherq@gmail.com"
+  },
+  "license": "MIT",
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "react_editor"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ],
+      "plugins": [
+        [
+          "@electron-forge/plugin-webpack",
+          {
+            "mainConfig": "./webpack.main.config.js",
+            "renderer": {
+              "config": "./webpack.renderer.config.js",
+              "entryPoints": [
+                {
+                  "html": "./src/index.html",
+                  "js": "./src/renderer.tsx",
+                  "name": "main_window"
+                }
+              ]
+            }
+          }
+        ]
+      ]
+    }
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "6.0.0-beta.47",
+    "@electron-forge/maker-deb": "6.0.0-beta.47",
+    "@electron-forge/maker-rpm": "6.0.0-beta.47",
+    "@electron-forge/maker-squirrel": "6.0.0-beta.47",
+    "@electron-forge/maker-zip": "6.0.0-beta.47",
+    "@electron-forge/plugin-webpack": "6.0.0-beta.47",
+    "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
+    "@types/react": "16.9.17",
+    "@types/react-beautiful-dnd": "11.0.4",
+    "@types/react-dom": "16.9.4",
+    "antd": "3.26.5",
+    "css-loader": "^3.0.0",
+    "electron": "7.1.7",
+    "fork-ts-checker-webpack-plugin": "^3.1.1",
+    "mobx": "5.15.1",
+    "mobx-react": "6.1.4",
+    "node-loader": "^0.6.0",
+    "react": "16.12.0",
+    "react-dom": "16.12.0",
+    "style-loader": "^0.23.1",
+    "ts-loader": "^6.2.1",
+    "tslint": "^5.20.0",
+    "typescript": "^3.7.0"
+  },
+  "dependencies": {
+    "@types/uuid": "3.4.6",
+    "conf": "6.2.0",
+    "electron-squirrel-startup": "1.0.0",
+    "react-beautiful-dnd": "12.2.0",
+    "react-dnd": "10.0.2",
+    "react-dnd-html5-backend": "10.0.2",
+    "react-docgen": "5.0.0",
+    "serializr": "1.5.4",
+    "uuid": "3.3.3"
+  }
+}
