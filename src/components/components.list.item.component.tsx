@@ -1,6 +1,7 @@
 import React from 'react';
 import { Menu } from 'antd';
-import { inject } from 'mobx-react';
+import Container from 'typedi';
+import uuid from 'uuid';
 
 import { DragSourceMonitor, ConnectDragSource } from 'react-dnd'
 import { DragSource, DragSourceConnector } from 'react-dnd'
@@ -9,25 +10,23 @@ import { ComponentData } from '../shared/types';
 import { WORKSPACE_DROP_ID } from '../shared/consts';
 import { ForwardRefComponent } from '../shared/forward.ref.component';
 
-import { PagesService } from '../pages/pages.service';
+import { ViewsService } from '../views/views.service';
 
 export interface Props {
   componentData: ComponentData;
   isDragging: boolean
   connectDragSource: ConnectDragSource
-  pagesService: PagesService
 }
 
 export class ComponentsListItemComponent extends React.Component<Props> {
   render() {
-    const { connectDragSource, isDragging, componentData, pagesService, ...props } = this.props;
+    const { connectDragSource, isDragging, componentData, ...props } = this.props;
     const { type, name } = componentData;
 
     return (
       <ForwardRefComponent refId={`component-${type}`} onRef={connectDragSource}>
         <Menu.Item
           {...props}
-          className={`component-${type}`}
           style={{
             opacity: isDragging ? 0.4 : 1,
             height: '30px',
@@ -46,10 +45,28 @@ export const DraggableComponentsListItemComponent = DragSource(
   {
     beginDrag: (props: Props) => props.componentData,
     endDrag(props: Props, monitor: DragSourceMonitor) {
-      const item = monitor.getItem();
+      const item: ComponentData = monitor.getItem();
       const dropResult = monitor.getDropResult();
+      const viewsService = Container.get(ViewsService);
 
-      props.pagesService.currentPage.content.push(item);
+      /**
+       * @todo Class here? Or just component service should return wrapped and cleaned object?
+       */
+      const componentItem = {
+        id: uuid.v4(),
+        name: item.name,
+        type: item.type,
+        props: Object.entries(item.props).reduce((memo, [propName, { defaultValue }]) => {
+          if (defaultValue) {
+            memo[propName] = eval(defaultValue) as unknown;
+          }
+
+          return memo;
+        }, {} as ComponentData['props']),
+        propsData: item.props
+      }
+
+      viewsService.activeView.content.push(componentItem);
     },
   },
   (connect: DragSourceConnector, monitor: DragSourceMonitor) => ({

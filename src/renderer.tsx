@@ -28,6 +28,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+import "reflect-metadata";
+
 import { ApplicationComponent } from "./application/application.component";
 
 /**

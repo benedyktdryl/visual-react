@@ -6,11 +6,15 @@ interface Props {
 }
 
 export class ForwardRefComponent extends React.Component<Props> {
+  private get refId() {
+    return this.props.refId.replace(/[^\w\s]/gi, '')
+  }
+
   componentDidMount() {
-    this.props.onRef(document.querySelector(`.${this.props.refId}`));
+    this.props.onRef(document.querySelector(`[data-refid=${this.refId}]`).firstElementChild);
   }
 
   render() {
-    return this.props.children;
+    return <span data-refid={this.refId}>{this.props.children}</span>;
   }
 }

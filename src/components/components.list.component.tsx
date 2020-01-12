@@ -1,34 +1,30 @@
 import React from 'react';
 import { action } from 'mobx';
+import Container from 'typedi';
 import { Menu, Button } from 'antd';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 
 import { ComponentsService } from './components.service'
 import { DraggableComponentsListItemComponent } from './components.list.item.component';
 
-import { PagesService } from '../pages/pages.service';
+import { ViewsService } from '../views/views.service';
 
-export interface Props {
-  pagesService?: PagesService;
-  componentsService?: ComponentsService;
-}
-
-@inject('componentsService', 'pagesService')
 @observer
-export class ComponentsListComponent extends React.Component<Props> {
-  render() {
-    const { componentsService, pagesService, ...props } = this.props;
+export class ComponentsListComponent extends React.Component {
+  private viewsService = Container.get(ViewsService);
+  private componentsService = Container.get(ComponentsService);
 
+  render() {
     return (
       <Menu.SubMenu
-        {...props}
+        {...this.props}
         key="components"
         title={
           <strong>Components</strong>
         }
       >
-        {this.props.componentsService.components.map(componentData => (
-          <DraggableComponentsListItemComponent pagesService={pagesService} key={componentData.id} componentData={componentData} />
+        {this.componentsService.components.map(componentData => (
+          <DraggableComponentsListItemComponent key={componentData.type} componentData={componentData} />
         ))}
       </Menu.SubMenu>
     )
